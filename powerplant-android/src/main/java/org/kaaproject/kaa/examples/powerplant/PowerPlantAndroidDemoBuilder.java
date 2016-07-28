@@ -16,16 +16,13 @@
 
 package org.kaaproject.kaa.examples.powerplant;
 
-import java.io.FileInputStream;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.kaaproject.kaa.common.dto.ApplicationDto;
 import org.kaaproject.kaa.common.dto.ConfigurationDto;
 import org.kaaproject.kaa.common.dto.ConfigurationSchemaDto;
 import org.kaaproject.kaa.common.dto.EndpointGroupDto;
 import org.kaaproject.kaa.common.dto.UpdateStatus;
-import org.kaaproject.kaa.common.dto.ctl.CTLSchemaDto;
 import org.kaaproject.kaa.examples.common.AbstractDemoBuilder;
 import org.kaaproject.kaa.examples.common.KaaDemoBuilder;
 import org.kaaproject.kaa.server.common.admin.AdminClient;
@@ -59,16 +56,12 @@ public class PowerPlantAndroidDemoBuilder extends AbstractDemoBuilder {
 
         loginTenantDeveloper(client);
 
-        CTLSchemaDto ctlSchema = saveCTLSchemaWithAppToken(client, "config_schema.avsc", powerPlantAndroidApplciation);
-
         logger.info("Creating configuration schema...");
         ConfigurationSchemaDto configurationSchema = new ConfigurationSchemaDto();
         configurationSchema.setApplicationId(powerPlantAndroidApplciation.getId());
         configurationSchema.setName("Powerplant android demo schema");
         configurationSchema.setDescription("Default configuration schema for the powerplant android demo");
-        configurationSchema.setCtlSchemaId(ctlSchema.getId());
-        configurationSchema = client.saveConfigurationSchema(configurationSchema);
-
+        configurationSchema = client.createConfigurationSchema(configurationSchema, getResourcePath("config_schema.avsc"));
         logger.info("Configuration schema version: {}", configurationSchema.getVersion());
         sdkProfileDto.setConfigurationSchemaVersion(configurationSchema.getVersion());
         logger.info("Configuration schema was created.");

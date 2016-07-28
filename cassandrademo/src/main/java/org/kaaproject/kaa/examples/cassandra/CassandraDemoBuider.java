@@ -17,7 +17,6 @@
 package org.kaaproject.kaa.examples.cassandra;
 
 import org.kaaproject.kaa.common.dto.ApplicationDto;
-import org.kaaproject.kaa.common.dto.ctl.CTLSchemaDto;
 import org.kaaproject.kaa.common.dto.logs.LogAppenderDto;
 import org.kaaproject.kaa.common.dto.logs.LogHeaderStructureDto;
 import org.kaaproject.kaa.common.dto.logs.LogSchemaDto;
@@ -63,9 +62,7 @@ public class CassandraDemoBuider extends AbstractDemoBuilder {
         logSchemaDto.setApplicationId(cassandraApplication.getId());
         logSchemaDto.setName("SensorData");
         logSchemaDto.setDescription("Log schema describing incoming logs");
-        CTLSchemaDto ctlSchema = saveCTLSchemaWithAppToken(client, "logSchema.json", cassandraApplication);
-        logSchemaDto.setCtlSchemaId(ctlSchema.getId());
-        logSchemaDto = client.saveLogSchema(logSchemaDto);
+        logSchemaDto = client.createLogSchema(logSchemaDto, getResourcePath("logSchema.json"));
         sdkProfileDto.setLogSchemaVersion(logSchemaDto.getVersion());
 
         LogAppenderDto sensorPerRowCassandraLogAppender = new LogAppenderDto();

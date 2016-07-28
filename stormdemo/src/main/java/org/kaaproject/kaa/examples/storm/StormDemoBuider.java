@@ -18,7 +18,6 @@ package org.kaaproject.kaa.examples.storm;
 
 
 import org.kaaproject.kaa.common.dto.ApplicationDto;
-import org.kaaproject.kaa.common.dto.ctl.CTLSchemaDto;
 import org.kaaproject.kaa.common.dto.logs.LogAppenderDto;
 import org.kaaproject.kaa.common.dto.logs.LogSchemaDto;
 import org.kaaproject.kaa.examples.common.AbstractDemoBuilder;
@@ -61,9 +60,7 @@ public class StormDemoBuider extends AbstractDemoBuilder {
         powerReportLogSchemaDto.setApplicationId(stormDataAnalyticsDemoApplication.getId());
         powerReportLogSchemaDto.setName("Power report");
         powerReportLogSchemaDto.setDescription("Storm demo log schema");
-        CTLSchemaDto ctlSchema = saveCTLSchemaWithAppToken(client, "powerReportLogSchema.json", stormDataAnalyticsDemoApplication);
-        powerReportLogSchemaDto.setCtlSchemaId(ctlSchema.getId());
-        powerReportLogSchemaDto = client.saveLogSchema(powerReportLogSchemaDto);
+        powerReportLogSchemaDto = client.createLogSchema(powerReportLogSchemaDto, getResourcePath("powerReportLogSchema.json"));
         sdkProfileDto.setLogSchemaVersion(powerReportLogSchemaDto.getVersion());
 
         LogAppenderDto flumeLogAppender = new LogAppenderDto();

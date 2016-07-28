@@ -16,7 +16,6 @@
 
 package org.kaaproject.kaa.examples.streetlight;
 
-import org.apache.commons.io.IOUtils;
 import org.kaaproject.kaa.common.dto.ApplicationDto;
 import org.kaaproject.kaa.common.dto.ConfigurationDto;
 import org.kaaproject.kaa.common.dto.ConfigurationSchemaDto;
@@ -30,8 +29,6 @@ import org.kaaproject.kaa.examples.common.KaaDemoBuilder;
 import org.kaaproject.kaa.server.common.admin.AdminClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.FileInputStream;
 
 @KaaDemoBuilder
 public class StreetLightDriverDemoBuilder extends AbstractDemoBuilder {
@@ -65,7 +62,8 @@ public class StreetLightDriverDemoBuilder extends AbstractDemoBuilder {
 
         logger.info("Creating profile schema...");
         
-        CTLSchemaDto profileCtlSchema = saveCTLSchemaWithAppToken(client, "profile.avsc", streetLightApplication);
+        CTLSchemaDto profileCtlSchema = client.saveCTLSchemaWithAppToken(getResourceAsString("profile.avsc"), streetLightApplication.getTenantId(),
+                streetLightApplication.getApplicationToken());
         
         EndpointProfileSchemaDto profileSchemaDto = new EndpointProfileSchemaDto();
         profileSchemaDto.setApplicationId(streetLightApplication.getId());
@@ -77,16 +75,12 @@ public class StreetLightDriverDemoBuilder extends AbstractDemoBuilder {
         sdkProfileDto.setProfileSchemaVersion(profileSchemaDto.getVersion());
         logger.info("Profile schema was created.");
 
-        CTLSchemaDto ctlSchema = saveCTLSchemaWithAppToken(client, "configuration.avsc", streetLightApplication);
-
         logger.info("Creating configuration schema...");
         ConfigurationSchemaDto configurationSchema = new ConfigurationSchemaDto();
         configurationSchema.setApplicationId(streetLightApplication.getId());
         configurationSchema.setName("StreetLightsConfiguration schema");
         configurationSchema.setDescription("Street Light configuration schema");
-        configurationSchema.setCtlSchemaId(ctlSchema.getId());
-        configurationSchema = client.saveConfigurationSchema(configurationSchema);
-
+        configurationSchema = client.createConfigurationSchema(configurationSchema, getResourcePath("configuration.avsc"));
         logger.info("Configuration schema version: {}", configurationSchema.getVersion());
         sdkProfileDto.setConfigurationSchemaVersion(configurationSchema.getVersion());
         logger.info("Configuration schema was created");

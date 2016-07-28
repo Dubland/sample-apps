@@ -42,7 +42,6 @@ import org.kaaproject.kaa.server.verifiers.trustful.config.TrustfulVerifierConfi
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 @KaaDemoBuilder
 public class GPIOcontrolDemoBuilder extends AbstractDemoBuilder {
 

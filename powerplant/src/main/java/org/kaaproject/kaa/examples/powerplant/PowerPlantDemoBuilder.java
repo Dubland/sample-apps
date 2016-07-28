@@ -16,17 +16,14 @@
 
 package org.kaaproject.kaa.examples.powerplant;
 
-import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.kaaproject.kaa.common.dto.ApplicationDto;
 import org.kaaproject.kaa.common.dto.ConfigurationDto;
 import org.kaaproject.kaa.common.dto.ConfigurationSchemaDto;
 import org.kaaproject.kaa.common.dto.EndpointGroupDto;
 import org.kaaproject.kaa.common.dto.UpdateStatus;
-import org.kaaproject.kaa.common.dto.ctl.CTLSchemaDto;
 import org.kaaproject.kaa.common.dto.logs.LogAppenderDto;
 import org.kaaproject.kaa.common.dto.logs.LogHeaderStructureDto;
 import org.kaaproject.kaa.common.dto.logs.LogSchemaDto;
@@ -75,9 +72,7 @@ public class PowerPlantDemoBuilder extends AbstractDemoBuilder {
         logSchemaDto.setApplicationId(powerPlantApplication.getId());
         logSchemaDto.setName("Power plant log schema");
         logSchemaDto.setDescription("Log schema describes incoming voltage reports");
-        CTLSchemaDto ctlLogSchema = saveCTLSchemaWithAppToken(client, "logSchema.json", powerPlantApplication);
-        logSchemaDto.setCtlSchemaId(ctlLogSchema.getId());
-        logSchemaDto = client.saveLogSchema(logSchemaDto);
+        logSchemaDto = client.createLogSchema(logSchemaDto, getResourcePath("logSchema.json"));
         sdkProfileDto.setLogSchemaVersion(logSchemaDto.getVersion());
 
         LogAppenderDto powerPlantLogAppender = new LogAppenderDto();
@@ -96,7 +91,9 @@ public class PowerPlantDemoBuilder extends AbstractDemoBuilder {
         powerPlantLogAppender.setJsonConfiguration(FileUtils.readResource(getResourcePath("restAppender.json")));
         powerPlantLogAppender = client.editLogAppenderDto(powerPlantLogAppender);
 
-        CTLSchemaDto ctlConfSchema = saveCTLSchemaWithAppToken(client, "configSchema.json", powerPlantApplication);
+        /*
+         * Configure the configuration feature.
+         */
 
         logger.info("Creating configuration schema...");
 
@@ -104,8 +101,7 @@ public class PowerPlantDemoBuilder extends AbstractDemoBuilder {
         configurationSchema.setApplicationId(powerPlantApplication.getId());
         configurationSchema.setName("Power plant configuration schema");
         configurationSchema.setDescription("Default configuration schema for the power plant application");
-        configurationSchema.setCtlSchemaId(ctlConfSchema.getId());
-        configurationSchema = client.saveConfigurationSchema(configurationSchema);
+        configurationSchema = client.createConfigurationSchema(configurationSchema, getResourcePath("configSchema.json"));
 
         logger.info("Configuration schema version: {}", configurationSchema.getVersion());
         sdkProfileDto.setConfigurationSchemaVersion(configurationSchema.getVersion());
